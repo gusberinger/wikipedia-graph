@@ -8,6 +8,8 @@ SHA1SUM_FILEPATH = TMP_FOLDER / "enwiki-latest-sha1sums.txt"
 REDIRECTS_FILEPATH = TMP_FOLDER / "enwiki-latest-redirect.sql.gz"
 PAGES_FILEPATH = TMP_FOLDER / "enwiki-latest-page.sql.gz"
 LINKS_FILEPATH = TMP_FOLDER / "enwiki-latest-pagelinks.sql.gz"
+LINKS_TRIMMED_FOLDER = TMP_FOLDER / "trimmed_links"
+LINKS_TRIMMED_FOLDER.mkdir(exist_ok=True)
 
 REDIRECTS_TRIMMED_FILEPATH = REDIRECTS_FILEPATH.with_suffix(".pickle")
 PAGES_TRIMMED_FILEPATH = PAGES_FILEPATH.with_suffix(".pickle")
