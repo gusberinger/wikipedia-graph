@@ -20,6 +20,11 @@ def main():
                 if line.startswith("28644448"):
                     page_info.append((28644448, r"\n", True))
                     continue
+
+                if line.startswith("71701640"):
+                    page_info.append((71701640, "104-2,3,(6),(7),11", True))
+                    continue
+
                 line = line.replace(",0,'", "\t")
                 line = re.sub(r"',[^,]*,([01]).*", r"\t\1", line)
                 page_id, title, is_redirect = line.split("\t")
