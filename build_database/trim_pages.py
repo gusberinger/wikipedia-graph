@@ -5,6 +5,10 @@ from tqdm import tqdm
 from constants import PAGES_FILEPATH, PAGES_TRIMMED_FILEPATH
 
 def main():
+    if PAGES_TRIMMED_FILEPATH.exists():
+        print("Pages file already trimmed")
+        return
+
     page_info: list[tuple[int, str, bool]] = []
     with gzip.open(PAGES_FILEPATH, "rt") as f:
         for large_line in tqdm(f, total=6938, desc="Trimming pages file"):
@@ -32,6 +36,8 @@ def main():
 
     with PAGES_TRIMMED_FILEPATH.open("wb") as f:
         pickle.dump(page_info, f)
+
+    PAGES_FILEPATH.unlink()
 
 if __name__ == "__main__":
     main()

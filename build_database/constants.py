@@ -10,4 +10,4 @@ PAGES_FILEPATH = TMP_FOLDER / "enwiki-latest-page.sql.gz"
 LINKS_FILEPATH = TMP_FOLDER / "enwiki-latest-pagelinks.sql.gz"
 
 REDIRECTS_TRIMMED_FILEPATH = REDIRECTS_FILEPATH.with_suffix(".pickle")
-PAGES_TRIMMED_FILEPATH = PAGES_FILEPATH.with_suffix(".txt.gz")
+PAGES_TRIMMED_FILEPATH = PAGES_FILEPATH.with_suffix(".pickle")

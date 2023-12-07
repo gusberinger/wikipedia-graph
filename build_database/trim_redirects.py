@@ -5,6 +5,10 @@ import re
 import pickle
 
 def main():
+    if REDIRECTS_TRIMMED_FILEPATH.exists():
+        print("Redirects file already trimmed")
+        return
+
     redirects: list[tuple[int, str]] = []
     with gzip.open(REDIRECTS_FILEPATH, "rt") as f:
         for large_line in tqdm(f, total=655, desc="Trimming redirects file"):
@@ -22,6 +26,9 @@ def main():
 
     with REDIRECTS_TRIMMED_FILEPATH.open("wb") as f:
         pickle.dump(redirects, f)
+
+
+    REDIRECTS_FILEPATH.unlink()
 
 if __name__ == "__main__":
     main()
