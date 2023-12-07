@@ -1,42 +1,32 @@
-# if [ ! -f pages.txt.gz ]; then
-#   echo
-#   echo "[INFO] Trimming pages file"
-
-#   # Unzip
-#   # Remove all lines that don't start with INSERT INTO...
-#   # Split into individual records
-#   # Only keep records in namespace 0
-#   # Replace namespace with a tab
-#   # Splice out the page title and whether or not the page is a redirect
-#   # Zip into output file
-#   time pigz -dc $PAGES_FILENAME \
-#     | sed -n 's/^INSERT INTO `page` VALUES (//p' \
-#     | sed -e 's/),(/\'$'\n/g' \
-#     | egrep "^[0-9]+,0," \
-#     | sed -e $"s/,0,'/\t/" \
-#     | sed -e $"s/',[^,]*,\([01]\).*/\t\1/" \
-#     | pigz --fast > pages.txt.gz.tmp
-#   mv pages.txt.gz.tmp pages.txt.gz
-# else
-#   echo "[WARN] Already trimmed pages file"
-# fi
 import gzip
-
+import pickle
+import re
 from tqdm import tqdm
 from constants import PAGES_FILEPATH, PAGES_TRIMMED_FILEPATH
 
 def main():
-    new_lines = []
+    page_info: list[tuple[int, str, bool]] = []
     with gzip.open(PAGES_FILEPATH, "rt") as f:
-        with tqdm(desc="Trimming pages file", total=6938) as pbar-d:
-            for line in f:
-                if line.startswith("INSERT INTO `page` VALUES ("):
-                    line = line[27:-3]
-                    line = line.replace("),(", "\n")
-                    line = line.replace("',", "\t")
-                    line = line.replace("'", "")
-                    new_lines.append(line)
-                pbar.update(1)
+        for large_line in tqdm(f, total=6938, desc="Trimming pages file"):
+            if not large_line.startswith("INSERT INTO `page` VALUES ("):
+                continue
+            large_line = large_line.replace("INSERT INTO `page` VALUES (", "")
+            lines = large_line.replace("),(", "\n").splitlines()
+            for line in lines:
+                if not re.match(r"^[0-9]+,0,", line):
+                    continue
+
+                # newline character breaks the script so we need to add it manually
+                if line.startswith("28644448"):
+                    page_info.append((28644448, r"\n", True))
+                    continue
+                line = line.replace(",0,'", "\t")
+                line = re.sub(r"',[^,]*,([01]).*", r"\t\1", line)
+                page_id, title, is_redirect = line.split("\t")
+                page_info.append((int(page_id), title, bool(int(is_redirect))))
+
+    with PAGES_TRIMMED_FILEPATH.open("wb") as f:
+        pickle.dump(page_info, f)
 
 if __name__ == "__main__":
     main()

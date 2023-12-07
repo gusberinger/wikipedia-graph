@@ -1,7 +1,9 @@
 from constants import REDIRECTS_TRIMMED_FILEPATH
-import gzip
+from download import main as download
+from trim_redirects import main as trim_redirects
+from trim_pages import main as trim_pages
 
-
-with gzip.open(REDIRECTS_TRIMMED_FILEPATH, "rb") as f:
-    for i, line in enumerate(f):
-        print(line)
+if __name__ == "__main__":
+    download()
+    trim_redirects()
+    trim_pages()
