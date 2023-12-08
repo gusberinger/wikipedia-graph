@@ -3,6 +3,8 @@ import pickle
 import re
 from tqdm import tqdm
 from constants import PAGES_FILEPATH, PAGES_TRIMMED_FILEPATH
+from multiprocessing import Pool, cpu_count
+import itertools
 
 
 def process_large_line(large_line: str) -> list[tuple[int, str, bool]]:
@@ -32,20 +34,28 @@ def process_large_line(large_line: str) -> list[tuple[int, str, bool]]:
     return batch
 
 
+def process_lines(lines):
+    links = []
+    for large_line in lines:
+        links.extend(process_large_line(large_line))
+    return links
+
+
 def main():
-    if PAGES_TRIMMED_FILEPATH.exists():
-        print("Pages file already trimmed")
-        return
-
     page_info: list[tuple[int, str, bool]] = []
+    num_processes = cpu_count()  # Use the number of available CPU cores
+    chunk_size = 100
     with gzip.open(PAGES_FILEPATH, "rt") as f:
-        for large_line in tqdm(f, total=6938, desc="Trimming pages file"):
-            page_info.extend(process_large_line(large_line))
+        with Pool(num_processes) as pool:
+            for links in tqdm(
+                enumerate(pool.imap(process_lines, itertools.batched(f, chunk_size))),
+                total=6938 // chunk_size,
+                desc="Trimming links file",
+            ):
+                page_info.extend(links)
 
-    with PAGES_TRIMMED_FILEPATH.open("wb") as f:
-        pickle.dump(page_info, f)
-
-    PAGES_FILEPATH.unlink()
+        with PAGES_TRIMMED_FILEPATH.open("wb") as f:
+            pickle.dump(page_info, f)
 
 
 if __name__ == "__main__":
