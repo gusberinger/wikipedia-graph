@@ -3,12 +3,18 @@ import pickle
 import re
 from tqdm import tqdm
 from constants import (
+    LINKS_PARSED_FOLDER,
     LINKS_SQL_FILEPATH,
     PAGES_PRUNED_FILEPATH,
     REDIRECTS_PRUNED_FILEPATH,
 )
 
 LINKS_REGEX = re.compile(r"(\d+),0,'(.+?)',0,(.*?)$")
+
+
+def save_links(links: list[tuple[int, int]], batch_id) -> None:
+    with open(LINKS_PARSED_FOLDER / f"{batch_id:03}.pickle", "wb") as f:
+        pickle.dump(links, f)
 
 
 def main():
@@ -28,7 +34,6 @@ def main():
             return []
         large_line = large_line.replace("INSERT INTO `pagelinks` VALUES (", "")
         lines = large_line.replace("),(", "\n").splitlines()
-        batch = []
         for line in lines:
             if line.endswith(");"):
                 line = line[:-2]
@@ -50,13 +55,21 @@ def main():
                 if target_id in redirects:
                     target_id = redirects[target_id]
 
-                batch.append((int(from_id), target_id))
-        return batch
+                yield (int(from_id), target_id)
 
     links = []
+    batch_id = 0
     with gzip.open(LINKS_SQL_FILEPATH, "rt") as f:
         for large_line in tqdm(f, total=67856, desc="Trimming links file"):
-            links.extend(process_line(large_line))
+            for link in process_line(large_line):
+                links.append(link)
+            if len(links) > 10**6:
+                save_links(links, batch_id)
+                batch_id += 1
+                links = []
+
+        if len(links) > 0:
+            save_links(links, batch_id)
 
 
 if __name__ == "__main__":
