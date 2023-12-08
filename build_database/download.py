@@ -3,15 +3,15 @@
 from pathlib import Path
 import requests
 from tqdm import tqdm
-from constants import REDIRECTS_FILEPATH, LINKS_FILEPATH, PAGES_FILEPATH
+from constants import REDIRECTS_SQL_FILEPATH, LINKS_SQL_FILEPATH, PAGES_SQL_FILEPATH
 
 
 def main(*, replace_existing: bool = False):
     base_url = "https://dumps.wikimedia.org/enwiki/latest/"
     files = [
-        REDIRECTS_FILEPATH,
-        PAGES_FILEPATH,
-        LINKS_FILEPATH,
+        REDIRECTS_SQL_FILEPATH,
+        PAGES_SQL_FILEPATH,
+        LINKS_SQL_FILEPATH,
     ]
     for path in files:
         if not replace_existing and path.exists():

@@ -3,7 +3,7 @@ import itertools
 import pickle
 import re
 from tqdm import tqdm
-from constants import LINKS_FILEPATH, LINKS_TRIMMED_FOLDER
+from constants import LINKS_SQL_FILEPATH, LINKS_PARSED_FOLDER
 from multiprocessing import Pool, cpu_count
 
 LINKS_REGEX = re.compile(r"(\d+),0,'(.+?)',0,(.*?)$")
@@ -21,14 +21,14 @@ def process_line(large_line: str) -> list[tuple[int, str, int]]:
         if match := re.match(LINKS_REGEX, line):
             from_id, title, target_id_match = match.groups()
             target_id = None if "NULL" in target_id_match else int(target_id_match)
-            
+
             # print(f"{line=} {from_id=} {title=} {target_id=}")
             batch.append((int(from_id), title, target_id))
     return batch
 
 
 def save_batch(batch: list[tuple[int, str, int]], batch_id: int):
-    with (LINKS_TRIMMED_FOLDER / f"{batch_id:03}.pickle").open("wb") as f:
+    with (LINKS_PARSED_FOLDER / f"{batch_id:03}.pickle").open("wb") as f:
         pickle.dump(batch, f)
 
 
@@ -40,7 +40,7 @@ def process_lines(lines):
 
 
 def main():
-    with gzip.open(LINKS_FILEPATH, "rt") as f:
+    with gzip.open(LINKS_SQL_FILEPATH, "rt") as f:
         chunk_size = 100
         num_processes = cpu_count()  # Use the number of available CPU cores
         with Pool(num_processes) as pool:

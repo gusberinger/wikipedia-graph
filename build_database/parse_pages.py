@@ -2,7 +2,7 @@ import gzip
 import pickle
 import re
 from tqdm import tqdm
-from constants import PAGES_FILEPATH, PAGES_TRIMMED_FILEPATH
+from constants import PAGES_SQL_FILEPATH, PAGES_PARSED_FILEPATH
 from multiprocessing import Pool, cpu_count
 import itertools
 
@@ -45,16 +45,16 @@ def main():
     page_info: list[tuple[int, str, bool]] = []
     num_processes = cpu_count()  # Use the number of available CPU cores
     chunk_size = 100
-    with gzip.open(PAGES_FILEPATH, "rt") as f:
+    with gzip.open(PAGES_SQL_FILEPATH, "rt") as f:
         with Pool(num_processes) as pool:
             for links in tqdm(
-                enumerate(pool.imap(process_lines, itertools.batched(f, chunk_size))),
+                pool.imap(process_lines, itertools.batched(f, chunk_size)),
                 total=6938 // chunk_size,
-                desc="Trimming links file",
+                desc="Parsing pages file",
             ):
                 page_info.extend(links)
 
-        with PAGES_TRIMMED_FILEPATH.open("wb") as f:
+        with PAGES_PARSED_FILEPATH.open("wb") as f:
             pickle.dump(page_info, f)
 
 

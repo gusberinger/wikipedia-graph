@@ -1,9 +1,9 @@
-from constants import REDIRECTS_TRIMMED_FILEPATH
+from constants import REDIRECTS_PARSED_FILEPATH
 from download import main as download
-from trim_redirects import main as trim_redirects
-from trim_pages import main as trim_pages
+from parse_redirects import main as parse_redirects
+from parse_pages import main as parse_pages
 
 if __name__ == "__main__":
     download()
-    trim_redirects()
-    trim_pages()
+    parse_redirects()
+    parse_pages()

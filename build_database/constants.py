@@ -5,11 +5,15 @@ TMP_FOLDER = PROJECT_ROOT / "tmp"
 TMP_FOLDER.mkdir(exist_ok=True)
 
 SHA1SUM_FILEPATH = TMP_FOLDER / "enwiki-latest-sha1sums.txt"
-REDIRECTS_FILEPATH = TMP_FOLDER / "enwiki-latest-redirect.sql.gz"
-PAGES_FILEPATH = TMP_FOLDER / "enwiki-latest-page.sql.gz"
-LINKS_FILEPATH = TMP_FOLDER / "enwiki-latest-pagelinks.sql.gz"
-LINKS_TRIMMED_FOLDER = TMP_FOLDER / "trimmed_links"
-LINKS_TRIMMED_FOLDER.mkdir(exist_ok=True)
 
-REDIRECTS_TRIMMED_FILEPATH = REDIRECTS_FILEPATH.with_suffix(".pickle")
-PAGES_TRIMMED_FILEPATH = PAGES_FILEPATH.with_suffix(".pickle")
+LINKS_SQL_FILEPATH = TMP_FOLDER / "enwiki-latest-pagelinks.sql.gz"
+LINKS_PARSED_FOLDER = TMP_FOLDER / "parsed_links"
+LINKS_PARSED_FOLDER.mkdir(exist_ok=True)
+
+PAGES_SQL_FILEPATH = TMP_FOLDER / "enwiki-latest-page.sql.gz"
+PAGES_PARSED_FILEPATH = PAGES_SQL_FILEPATH.with_suffix(".pickle")
+PAGES_PRUNED_FILEPATH = TMP_FOLDER / "pages_pruned.pickle"
+
+REDIRECTS_SQL_FILEPATH = TMP_FOLDER / "enwiki-latest-redirect.sql.gz"
+REDIRECTS_PARSED_FILEPATH = REDIRECTS_SQL_FILEPATH.with_suffix(".pickle")
+REDIRECTS_PRUNED_FILEPATH = TMP_FOLDER / "redirects_pruned.pickle"
