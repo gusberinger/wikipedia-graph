@@ -1,6 +1,7 @@
 from tqdm import tqdm
 from constants import (
     PAGES_PARSED_FILEPATH,
+    PAGES_PRUNED_FILEPATH,
     REDIRECTS_PARSED_FILEPATH,
     REDIRECTS_PRUNED_FILEPATH,
 )
@@ -53,6 +54,18 @@ def main():
 
         if target_page_id is not None:
             pruned_redirects[source_page_id] = target_page_id
+
+    # remove pages that are marked as redirects but don't have a target
+    # they are probably intermediary redirects that we don't care about
+    # i.e A -> B -> C, we only care about A -> C
+    pruned_pages = [
+        (page_id, title, is_redirect)
+        for page_id, title, is_redirect in tqdm(pages, desc="Pruning pages")
+        if (not is_redirect) or (is_redirect and page_id in pruned_redirects)
+    ]
+
+    with open(PAGES_PRUNED_FILEPATH, "wb") as f:
+        pickle.dump(pruned_pages, f)
 
     with open(REDIRECTS_PRUNED_FILEPATH, "wb") as f:
         pickle.dump(pruned_redirects, f)
