@@ -16,12 +16,13 @@ def process_line(large_line: str) -> list[tuple[int, str, int]]:
     lines = large_line.replace("),(", "\n").splitlines()
     batch = []
     for line in lines:
+        if line.endswith(");"):
+            line = line[:-2]
         if match := re.match(LINKS_REGEX, line):
-            line = line.replace(",NULL);", "NULL")
-            if not line.strip().endswith("NULL"):
-                print(f"{line=}")
             from_id, title, target_id_match = match.groups()
             target_id = None if "NULL" in target_id_match else int(target_id_match)
+            
+            # print(f"{line=} {from_id=} {title=} {target_id=}")
             batch.append((int(from_id), title, target_id))
     return batch
 
