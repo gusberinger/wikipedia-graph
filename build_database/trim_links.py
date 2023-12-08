@@ -4,8 +4,10 @@ import pickle
 import re
 from tqdm import tqdm
 from constants import LINKS_FILEPATH, LINKS_TRIMMED_FOLDER
+from multiprocessing import Pool, cpu_count
 
 LINKS_REGEX = re.compile(r"(\d+),0,'(.+?)',0,(.*?)$")
+
 
 def process_line(large_line: str) -> list[tuple[int, str, int]]:
     if not large_line.startswith("INSERT INTO `pagelinks` VALUES ("):
@@ -24,19 +26,32 @@ def process_line(large_line: str) -> list[tuple[int, str, int]]:
             batch.append((int(from_id), title, target_id))
     return batch
 
+
 def save_batch(batch: list[tuple[int, str, int]], batch_id: int):
     with (LINKS_TRIMMED_FOLDER / f"{batch_id:04}.pickle").open("wb") as f:
         pickle.dump(batch, f)
 
+
+def process_lines(lines):
+    links = []
+    for large_line in lines:
+        links.extend(process_line(large_line))
+    return links
+
+
 def main():
     with gzip.open(LINKS_FILEPATH, "rt") as f:
         chunk_size = 100
-        for i, lines in tqdm(enumerate(itertools.batched(f, chunk_size)), total=67856 // chunk_size, desc="Trimming links file"):
-            links = []
-            for large_line in lines:
-                links.extend(process_line(large_line))
-            save_batch(links, i)
-            
+        num_processes = cpu_count()  # Use the number of available CPU cores
+        with Pool(num_processes) as pool:
+            for i, links in tqdm(
+                enumerate(pool.imap(process_lines, itertools.batched(f, chunk_size))),
+                total=67856 // chunk_size,
+                desc="Trimming links file",
+            ):
+                print(len(links), i)
+                save_batch(links, i)
+
 
 if __name__ == "__main__":
     main()
