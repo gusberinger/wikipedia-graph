@@ -22,13 +22,12 @@ def process_line(large_line: str) -> list[tuple[int, str, int]]:
                 print(f"{line=}")
             from_id, title, target_id_match = match.groups()
             target_id = None if "NULL" in target_id_match else int(target_id_match)
-            assert target_id is None
             batch.append((int(from_id), title, target_id))
     return batch
 
 
 def save_batch(batch: list[tuple[int, str, int]], batch_id: int):
-    with (LINKS_TRIMMED_FOLDER / f"{batch_id:04}.pickle").open("wb") as f:
+    with (LINKS_TRIMMED_FOLDER / f"{batch_id:03}.pickle").open("wb") as f:
         pickle.dump(batch, f)
 
 
