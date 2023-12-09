@@ -1,6 +1,6 @@
 from tqdm import tqdm
 import bidict
-from constants import (
+from .constants import (
     PAGES_PARSED_FILEPATH,
     PAGES_PRUNED_FILEPATH,
     REDIRECTS_PARSED_FILEPATH,

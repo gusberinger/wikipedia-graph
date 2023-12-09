@@ -1,6 +1,6 @@
 from tqdm import tqdm
 import gzip
-from constants import REDIRECTS_SQL_FILEPATH, REDIRECTS_PARSED_FILEPATH
+from .constants import REDIRECTS_SQL_FILEPATH, REDIRECTS_PARSED_FILEPATH
 import re
 import pickle
 

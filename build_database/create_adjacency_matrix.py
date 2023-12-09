@@ -1,7 +1,7 @@
 import itertools
 import pickle
 from tqdm import tqdm
-from constants import (
+from .constants import (
     LINKS_PARSED_FOLDER,
     PAGES_PRUNED_FILEPATH,
     TMP_FOLDER,

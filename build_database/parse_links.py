@@ -2,7 +2,7 @@ import gzip
 import pickle
 import re
 from tqdm import tqdm
-from constants import (
+from .constants import (
     LINKS_PARSED_FOLDER,
     LINKS_SQL_FILEPATH,
     PAGES_PRUNED_FILEPATH,

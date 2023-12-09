@@ -1,4 +1,4 @@
-from constants import (
+from .constants import (
     PAGES_PRUNED_FILEPATH,
     WIKI_GRAPH_FILEPATH,
 )

@@ -2,7 +2,7 @@ import gzip
 import pickle
 import re
 from tqdm import tqdm
-from constants import PAGES_SQL_FILEPATH, PAGES_PARSED_FILEPATH
+from .constants import PAGES_SQL_FILEPATH, PAGES_PARSED_FILEPATH
 from multiprocessing import Pool, cpu_count
 import itertools
 
