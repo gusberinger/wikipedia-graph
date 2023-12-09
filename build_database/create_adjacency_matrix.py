@@ -49,12 +49,12 @@ def main():
 
     # combine all the matrices
     link_matrix_files = list(link_csr_folder.glob("*.npz"))
-    matrices = []
-    for batch in itertools.batched(link_matrix_files, 100):
-        matrix = sp.csr_matrix((size, size), dtype=int)
-        for link_matrix_file in tqdm(batch, desc="Combining adjacency matrices"):
-            with open(link_matrix_file, "rb") as f:
-                matrix += sp.load_npz(f)
+    matrix = sp.csr_matrix((size, size), dtype=int)
+    for link_matrix_file in tqdm(
+        link_matrix_files, desc="Combining adjacency matrices"
+    ):
+        with open(link_matrix_file, "rb") as f:
+            matrix += sp.load_npz(f)
 
     with open(WIKI_GRAPH_FILEPATH, "wb") as f:
         sp.save_npz(f, matrix)

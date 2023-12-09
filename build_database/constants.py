@@ -20,6 +20,5 @@ REDIRECTS_SQL_FILEPATH = TMP_FOLDER / "enwiki-latest-redirect.sql.gz"
 REDIRECTS_PARSED_FILEPATH = REDIRECTS_SQL_FILEPATH.with_suffix(".pickle")
 REDIRECTS_PRUNED_FILEPATH = TMP_FOLDER / "redirects_pruned.pickle"
 
-WIKI_TITLE_TO_ID_FILEPATH = DATA_FOLDER / "wiki_title_to_id.pickle"
-WIKI_ID_TO_TITLE_FILEPATH = DATA_FOLDER / "wiki_id_to_title.pickle"
-WIKI_GRAPH_FILEPATH = DATA_FOLDER / "wiki_graph.pickle"
+WIKI_PAGEID_TO_TITLE_MAP = DATA_FOLDER / "wiki_id_to_title.pickle"
+WIKI_GRAPH_FILEPATH = DATA_FOLDER / "wiki_graph.npz"
