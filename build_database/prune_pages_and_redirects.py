@@ -4,6 +4,8 @@ from constants import (
     PAGES_PRUNED_FILEPATH,
     REDIRECTS_PARSED_FILEPATH,
     REDIRECTS_PRUNED_FILEPATH,
+    WIKI_ID_TO_TITLE_FILEPATH,
+    WIKI_TITLE_TO_ID_FILEPATH,
 )
 import pickle
 
@@ -63,6 +65,26 @@ def main():
         for page_id, title, is_redirect in tqdm(pages, desc="Pruning pages")
         if (not is_redirect) or (is_redirect and page_id in pruned_redirects)
     ]
+
+    titles_to_id_map = {
+        title: page_id
+        for page_id, title, _ in tqdm(
+            pruned_pages, desc="Mapping titles to IDs from pruned pages"
+        )
+    }
+
+    ids_to_titles_map = {
+        page_id: title
+        for page_id, title, _ in tqdm(
+            pruned_pages, desc="Mapping IDs to titles from pruned pages"
+        )
+    }
+
+    with open(WIKI_TITLE_TO_ID_FILEPATH, "wb") as f:
+        pickle.dump(titles_to_id_map, f)
+
+    with open(WIKI_ID_TO_TITLE_FILEPATH, "wb") as f:
+        pickle.dump(ids_to_titles_map, f)
 
     with open(PAGES_PRUNED_FILEPATH, "wb") as f:
         pickle.dump(pruned_pages, f)
