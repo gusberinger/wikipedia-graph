@@ -9,7 +9,7 @@ from constants import (
     REDIRECTS_PRUNED_FILEPATH,
 )
 
-LINKS_REGEX = re.compile(r"(\d+),0,'(.+?)',0,(.*?)$")
+LINKS_REGEX = re.compile(r"(\d+),0,'(.*)',0,(NULL|\d+)$")
 
 
 def save_links(links: list[tuple[int, int]], batch_id) -> None:
