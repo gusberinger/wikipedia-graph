@@ -22,3 +22,4 @@ REDIRECTS_PRUNED_FILEPATH = TMP_FOLDER / "redirects_pruned.pickle"
 
 WIKI_TITLE_TO_ID_FILEPATH = DATA_FOLDER / "wiki_title_to_id.pickle"
 WIKI_ID_TO_TITLE_FILEPATH = DATA_FOLDER / "wiki_id_to_title.pickle"
+WIKI_GRAPH_FILEPATH = DATA_FOLDER / "wiki_graph.pickle"
