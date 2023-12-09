@@ -38,7 +38,6 @@ def main():
             if line.endswith(");"):
                 line = line[:-2]
 
-            # print(line)
             if match := re.match(LINKS_REGEX, line):
                 from_id, target_title, target_id_match = match.groups()
 

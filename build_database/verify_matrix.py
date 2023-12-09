@@ -21,12 +21,9 @@ def main():
         {page_id: title for page_id, title, is_redirect in pages if not is_redirect}
     )
 
-    # page_id_to_idx = bidict({page_id: i for i, page_id in enumerate(title_id_map)})
-
     pages = [3434750, 14919, 39394532]
     pages = [39394532]
     graph = sp.load_npz(WIKI_GRAPH_FILEPATH)
-    subgraph = graph.sub
 
     for page_id in pages:
         title = title_id_map[page_id]
@@ -35,6 +32,7 @@ def main():
         incoming = graph[:, idx].nonzero()[0]
         incoming_ids = [page_id_to_idx.inverse[i] for i in incoming]
         incoming_titles = [title_id_map[i] for i in incoming_ids]
+        print(title, incoming_titles)
 
 
 if __name__ == "__main__":

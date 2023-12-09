@@ -1,4 +1,3 @@
-from pathlib import Path
 import requests
 from tqdm import tqdm
 from .constants import REDIRECTS_SQL_FILEPATH, LINKS_SQL_FILEPATH, PAGES_SQL_FILEPATH

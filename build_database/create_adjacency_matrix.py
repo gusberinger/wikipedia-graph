@@ -1,4 +1,3 @@
-import itertools
 import pickle
 from tqdm import tqdm
 from .constants import (
