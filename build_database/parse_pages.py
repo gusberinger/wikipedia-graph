@@ -6,6 +6,15 @@ from constants import PAGES_SQL_FILEPATH, PAGES_PARSED_FILEPATH
 from multiprocessing import Pool, cpu_count
 import itertools
 
+# the partial match doesn't get data but it a simple
+# way to ensure that if we don't match the main regex
+# it is because of an error in the main expression
+PAGE_PARTIAL_MATCH = re.compile(r"\d+,0")
+
+PAGE_REGEX = re.compile(
+    r"(\d+),0,'(.*)',([01]),[01],0\.\d+,'\d+','\d+',\d+,\d+,'wikitext',NULL"
+)
+
 
 def process_large_line(large_line: str) -> list[tuple[int, str, bool]]:
     if not large_line.startswith("INSERT INTO `page` VALUES ("):
@@ -14,11 +23,10 @@ def process_large_line(large_line: str) -> list[tuple[int, str, bool]]:
     lines = large_line.replace("),(", "\n").splitlines()
     batch = []
     for line in lines:
-        if not re.match(r"^[0-9]+,0,", line):
+        if not re.match(PAGE_PARTIAL_MATCH, line):
             continue
-
-        # newline character breaks the script so we need to add it manually
         if line.startswith("28644448"):
+            # newline character breaks the script so we need to add it manually
             batch.append((28644448, r"\n", True))
             continue
 
@@ -26,10 +34,12 @@ def process_large_line(large_line: str) -> list[tuple[int, str, bool]]:
             batch.append((71701640, "104-2,3,(6),(7),11", True))
             continue
 
-        line = line.replace(",0,'", "\t")
-        line = re.sub(r"',[^,]*,([01]).*", r"\t\1", line)
-        page_id, title, is_redirect = line.split("\t")
-        batch.append((int(page_id), title, bool(int(is_redirect))))
+        page_info = re.match(PAGE_REGEX, line)
+        if not page_info:
+            raise ValueError(f"Could not parse line: {line}")
+
+        page_id, title, is_redirect = page_info.groups()
+        batch.append((int(page_id), title, is_redirect == "1"))
 
     return batch
 
@@ -56,6 +66,10 @@ def main():
 
         with PAGES_PARSED_FILEPATH.open("wb") as f:
             pickle.dump(page_info, f)
+
+    # avoid duplicate titles
+    titles = {title for _, title, _ in page_info}
+    assert len(titles) == len(page_info)
 
 
 if __name__ == "__main__":
