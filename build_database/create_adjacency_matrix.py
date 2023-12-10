@@ -48,11 +48,12 @@ def main():
             with open(link_csr_folder / f"{i}.npz", "wb") as f:
                 sp.save_npz(f, csr_matrix)
 
-    # combine all the matrices
+    # A divide and conquer approach would be better but,
+    #  the tradeoff of RAM vs time is not worth it.
     link_matrix_files = list(link_csr_folder.glob("*.npz"))
     matrix = sp.csr_matrix((size, size), dtype=int)
     for link_matrix_file in tqdm(
-        link_matrix_files, desc="Combining adjacency matrices"
+        link_matrix_files, desc="Combining adjacency matrices (est. 25 minutes)"
     ):
         with open(link_matrix_file, "rb") as f:
             matrix += sp.load_npz(f)
