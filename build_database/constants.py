@@ -21,4 +21,5 @@ REDIRECTS_PARSED_FILEPATH = REDIRECTS_SQL_FILEPATH.with_suffix(".pickle")
 REDIRECTS_PRUNED_FILEPATH = TMP_FOLDER / "redirects_pruned.pickle"
 
 WIKI_PAGEID_TO_TITLE_MAP = DATA_FOLDER / "wiki_id_to_title.pickle"
+WIKI_PAGEID_TO_IDX_MAP = DATA_FOLDER / "wiki_id_to_idx.json"
 WIKI_GRAPH_FILEPATH = DATA_FOLDER / "wiki_graph.npz"

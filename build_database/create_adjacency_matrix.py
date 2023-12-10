@@ -1,3 +1,4 @@
+import json
 import pickle
 from tqdm import tqdm
 from .constants import (
@@ -5,6 +6,7 @@ from .constants import (
     PAGES_PRUNED_FILEPATH,
     TMP_FOLDER,
     WIKI_GRAPH_FILEPATH,
+    WIKI_PAGEID_TO_IDX_MAP,
 )
 import scipy.sparse as sp
 import numpy as np
@@ -57,6 +59,9 @@ def main():
 
     with open(WIKI_GRAPH_FILEPATH, "wb") as f:
         sp.save_npz(f, matrix)
+
+    with open(WIKI_PAGEID_TO_IDX_MAP, "w") as f:
+        json.dump(page_to_to_idx, f)
 
 
 if __name__ == "__main__":
